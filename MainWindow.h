@@ -34,9 +34,10 @@ class MainWindow : public QMainWindow
 
     static const int BOARD_WIDTH = 5;
     static const int BOARD_HEIGHT = 5;
+    static const int BOARD_WEIGHT = BOARD_WIDTH*BOARD_HEIGHT;
 
-    int BOARD_1[BOARD_WIDTH*BOARD_HEIGHT]; //First player
-    int BOARD_2[BOARD_WIDTH*BOARD_HEIGHT]; //Second player OR Computer player
+    int BOARD_1[BOARD_WEIGHT]; //First player
+    int BOARD_2[BOARD_WEIGHT]; //Second player OR Computer player
 
 public:
     explicit MainWindow(QWidget *parent = 0);

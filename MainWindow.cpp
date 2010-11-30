@@ -56,7 +56,7 @@ int MainWindow::computerClick(QList<int> state) {
 
             //Try second direction:
             elem = state.at(1) + BOARD_WIDTH;
-            while(elem < BOARD_HEIGHT*BOARD_WIDTH) {
+            while(elem < BOARD_WEIGHT) {
                 //If BOARD_1[elem] is positive then never detected:
                 if(BOARD_1[elem] >= 0) {
                     //Take decision to hit it:
@@ -82,7 +82,7 @@ int MainWindow::computerClick(QList<int> state) {
 
             //Try second direction:
             elem = state.at(1) + 1;
-            while(elem < BOARD_HEIGHT*BOARD_WIDTH) {
+            while(elem < BOARD_WEIGHT) {
                 //If BOARD_1[elem] is positive then never detected:
                 if(BOARD_1[elem] >= 0) {
                     //Take decision to hit it:
@@ -104,22 +104,22 @@ int MainWindow::computerClick(QList<int> state) {
 
     //Search in it's right-side:
     search = states.at(0) + 1;
-    if(search < BOARD_HEIGHT*BOARD_WIDTH && BOARD_1[search] >= 0) {
+    if(search < BOARD_WEIGHT && BOARD_1[search] >= 0) {
         return search;
     }
     //Search in it's top-side:
     search = states.at(0) - BOARD_WIDTH;
-    if(search && BOARD_1[search] >= 0) {
+    if(search > 0 && BOARD_1[search] >= 0) {
         return search;
     }
     //Search in it's bottom-side:
     search = states.at(0) + BOARD_WIDTH;
-    if(search < BOARD_HEIGHT*BOARD_WIDTH && BOARD_1[search] >= 0) {
+    if(search < BOARD_WEIGHT && BOARD_1[search] >= 0) {
         return search;
     }
     //Search in it's left-side:
     search = states.at(0) - 1;
-    if(search && BOARD_1[search] >= 0) {
+    if(search > 0 && BOARD_1[search] >= 0) {
         return search;
     }
 }
