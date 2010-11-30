@@ -36,8 +36,18 @@ class MainWindow : public QMainWindow
     static const int BOARD_HEIGHT = 5;
     static const int BOARD_WEIGHT = BOARD_WIDTH*BOARD_HEIGHT;
 
+    static const int MODE_PLAY_VS_PLAY = 1;
+    static const int MODE_PLAY_VS_COMP = 2;
+
     int BOARD_1[BOARD_WEIGHT]; //First player
     int BOARD_2[BOARD_WEIGHT]; //Second player OR Computer player
+
+    QList<int> state_1; //state for player_1
+    QList<int> state_2; //state for player_2
+
+    int game_mode; //MODE_PLAY_VS_PLAY || MODE_PLAY_VS_COMP
+    int game_turn; //1 -> player_1 || 2-> player_2
+
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -46,9 +56,14 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    //'state' the current available slots in the board (int of locations)
     //@return the decided action location
-    int computerClick(QList<int> state);
+    int computerClick();
+
+    //@arg1 the player that have its turn (1 or 2)
+    //@return void
+    void play(int);
+
+
 };
 
 #endif // MAINWINDOW_H
