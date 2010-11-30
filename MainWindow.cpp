@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Declare dummy inits:
     BOARD_1[0] =0;BOARD_1[1] =0;BOARD_1[2] =0;BOARD_1[3] =0;BOARD_1[4] =0;
-    BOARD_1[5] =0;BOARD_1[6] =1;BOARD_1[7] =2;BOARD_1[8] =0;BOARD_1[9] =0;
+    BOARD_1[5] =0;BOARD_1[6] =0;BOARD_1[7] =2;BOARD_1[8] =0;BOARD_1[9] =0;
     BOARD_1[10]=0;BOARD_1[11]=0;BOARD_1[12]=2;BOARD_1[13]=0;BOARD_1[14]=0;
     BOARD_1[15]=0;BOARD_1[16]=0;BOARD_1[17]=3;BOARD_1[18]=3;BOARD_1[19]=3;
     BOARD_1[20]=0;BOARD_1[21]=0;BOARD_1[22]=0;BOARD_1[23]=0;BOARD_1[24]=0;
@@ -41,6 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     cli_disp();
 
+    //test:
+    played = 0;
+
     play(2, -1);
 }
 
@@ -55,12 +58,35 @@ void MainWindow::cli_disp() {
 
     cout<<endl<<endl;
 
+    /*
     for (int i=0; i<BOARD_WIDTH; i++) {
         for(int j=0; j<BOARD_HEIGHT; j++) {
             cout << BOARD_2[i*BOARD_WIDTH + j];
         }
         cout<<endl;
+    }*/
+
+    //cout<<endl<<endl<<endl;
+
+    /*
+    for(int i=0; i<BOARD_WIDTH; i++) {
+        for(int j=0; j<BOARD_HEIGHT; j++) {
+
+        }
+    }*/
+
+    for(int i=0; i<state_1.count(); i++) {
+        cout << state_1.at(i) << " -- ";
     }
+    cout<<endl;
+    for(int i=0; i<cpu_states.count(); i++) {
+        cout << cpu_states.at(i) << " -- ";
+    }
+    cout<<endl<<endl;
+    /*
+    for(int i=0; i<state_2.count(); i++) {
+        cout << state_2.at(i) << endl;
+    }*/
 }
 
 MainWindow::~MainWindow()
@@ -69,6 +95,9 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::play(int player, int location) {
+
+
+
 
     bool playAgain = true;
     int value = 999;
@@ -122,21 +151,45 @@ void MainWindow::play(int player, int location) {
             break;
         }
         state_1.removeAt(location);
-        //TODO: need to handle removing states from the computerClick() if it's a ship sinks
+
+        //if it's a complete ship
+        if(cpu_states.count() > 1) {
+            int count = 1;
+            for(int i=1, prev=BOARD_1[cpu_states.at(0)]; i<cpu_states.count(); i++) {
+                if(BOARD_1[cpu_states.at(i)] != prev) {
+                    break;
+                }
+                count++;
+            }
+            if(-1*count == BOARD_1[cpu_states.at(0)]) {
+                cpu_states.clear();
+            }
+        }
+
         break;
     }
 
 //call update_ui()
 
-    if(playAgain && game_mode==MODE_PLAY_VS_COMP) {
+    cli_disp();
+
+    if(playAgain && game_mode==MODE_PLAY_VS_COMP  && played < 20) {
+        played ++;
+        play(2, -1);
+    }
+
+    //test to play again:
+    cout<<"***** PLAY AGAIN:" << endl << endl;
+    if(state_1.count() > 0 && played < 20) {
+        played ++;
         play(2, -1);
     }
 }
 
-void MainWindow::chkComputerStates(int loc, QList<int> current) {
+void MainWindow::chkComputerStates(int loc) {
     //If not water then add to my states:
     if(BOARD_1[loc] > 0) {
-        current.append(loc);
+        cpu_states.append(loc);
     }
 }
 
@@ -144,61 +197,62 @@ int MainWindow::computerClick() {
 
     /*
      * VERY IMPORTANT
-     * MUST call chkComputerStates(val, states) BEFORE return
+     * MUST call chkComputerStates(val) BEFORE return
      * WHERE 'val' is the designed value to be returned
      */
 
     //Will check in BOARD_1 because computer's board is always BOARD_2
     //Will deal with state_1 because it's always the non-computer state
 
-    static QList<int> states; //The previous states -if any-
-    static QList<int> waitStates; //If detected more than one 'states'
+
 
     //No old states,
-    if(states.count() == 0) {
+    if(cpu_states.count() == 0) {
         //(1) If no waites -> select a random location:
-        if(waitStates.count() == 0) {
+        if(cpu_waitStates.count() == 0) {
             QTime midnight(0, 0, 0);
             qsrand(midnight.secsTo(QTime::currentTime()));
             int selection = qrand() % state_1.count();
 
-            chkComputerStates(state_1.at(selection), states);
+            chkComputerStates(state_1.at(selection));
             return state_1.at(selection);
+            //chkComputerStates(12);
+            //return 12;
         }
 
         //(2) If waites contains element(s):
-        states = waitStates;
-        waitStates.clear();
+        cpu_states = cpu_waitStates;
+        cpu_waitStates.clear();
     }
 
     //Get the position of the elements if it's more than one element:
-    if(states.count() > 1) {
-        int rel = qAbs(state_1.at(1) - state_1.at(0));
+    if(cpu_states.count() > 1) {
+        int rel = qAbs(cpu_states.at(1) - cpu_states.at(0));
 
         //Position -> vertical
         if(rel == BOARD_WIDTH) {
 
             //Try first direction:
-            int elem = state_1.at(1) - BOARD_WIDTH;
-            while(elem > 0) {
+            int elem = cpu_states.at(1) - BOARD_WIDTH; //result should not be negative
+            while(elem > 0 && BOARD_1[elem] != CASE_WATER_DET) {
                 //If BOARD_1[elem] is positive then never detected:
                 if(BOARD_1[elem] >= 0) {
                     //Take decision to hit it:
 
-                    chkComputerStates(elem, states);
+                    chkComputerStates(elem);
                     return elem;
                 }
                 elem -= BOARD_WIDTH;
             }
 
             //Try second direction:
-            elem = state_1.at(1) + BOARD_WIDTH;
-            while(elem < BOARD_WEIGHT) {
+            elem = cpu_states.at(1) + BOARD_WIDTH; //result should not be out of weight
+            while(elem < BOARD_WEIGHT && BOARD_1[elem] != CASE_WATER_DET) {
                 //If BOARD_1[elem] is positive then never detected:
                 if(BOARD_1[elem] >= 0) {
                     //Take decision to hit it:
 
-                    chkComputerStates(elem, states);
+                    chkComputerStates(elem);
                     return elem;
                 }
                 elem += BOARD_WIDTH;
@@ -209,26 +263,26 @@ int MainWindow::computerClick() {
         if(rel == 1) {
 
             //Try first direction:
-            int elem = state_1.at(1) - 1;
-            while(elem > 0) {
+            int elem = cpu_states.at(1) - 1; //% result is in [0, 1, 2, 3]
+            while(elem % BOARD_WIDTH < 4 && BOARD_1[elem] != CASE_WATER_DET) {
                 //If BOARD_1[elem] is positive then never detected:
                 if(BOARD_1[elem] >= 0) {
                     //Take decision to hit it:
 
-                    chkComputerStates(elem, states);
+                    chkComputerStates(elem);
                     return elem;
                 }
                 elem -= 1;
             }
 
             //Try second direction:
-            elem = state_1.at(1) + 1;
-            while(elem < BOARD_WEIGHT) {
+            elem = cpu_states.at(1) + 1; //% result is in [1, 2, 3, 4]
+            while(elem % BOARD_WIDTH != 0 && BOARD_1[elem] != CASE_WATER_DET) {
                 //If BOARD_1[elem] is positive then never detected:
                 if(BOARD_1[elem] >= 0) {
                     //Take decision to hit it:
 
-                    chkComputerStates(elem, states);
+                    chkComputerStates(elem);
                     return elem;
                 }
                 elem += 1;
@@ -236,11 +290,11 @@ int MainWindow::computerClick() {
         }
 
         //Being here means that all directions are already revailed, then it's more than one state:
-        waitStates.append(states.at(0));
-        states.removeAt(0);
+        cpu_waitStates.append(cpu_states.at(0));
+        cpu_states.removeAt(0);
 
         int ret = computerClick();
-        chkComputerStates(ret, states);
+        chkComputerStates(ret);
         return ret;
     }
 
@@ -249,27 +303,27 @@ int MainWindow::computerClick() {
     int search = 0;
 
     //Search in it's right-side:
-    search = states.at(0) + 1;
-    if(search < BOARD_WEIGHT && BOARD_1[search] >= 0) {
-        chkComputerStates(search, states);
+    search = cpu_states.at(0) + 1; //% result should be in [1, 2, 3, 4]
+    if(search % BOARD_WIDTH != 0 && BOARD_1[search] >= 0 && BOARD_1[search] != CASE_WATER_DET) {
+        chkComputerStates(search);
         return search;
     }
     //Search in it's top-side:
-    search = states.at(0) - BOARD_WIDTH;
-    if(search > 0 && BOARD_1[search] >= 0) {
-        chkComputerStates(search, states);
+    search = cpu_states.at(0) - BOARD_WIDTH;
+    if(search > 0 && BOARD_1[search] >= 0 && BOARD_1[search] != CASE_WATER_DET) {
+        chkComputerStates(search);
         return search;
     }
     //Search in it's bottom-side:
-    search = states.at(0) + BOARD_WIDTH;
-    if(search < BOARD_WEIGHT && BOARD_1[search] >= 0) {
-        chkComputerStates(search, states);
+    search = cpu_states.at(0) + BOARD_WIDTH;
+    if(search < BOARD_WEIGHT && BOARD_1[search] >= 0 && BOARD_1[search] != CASE_WATER_DET) {
+        chkComputerStates(search);
         return search;
     }
     //Search in it's left-side:
-    search = states.at(0) - 1;
-    if(search > 0 && BOARD_1[search] >= 0) {
-        chkComputerStates(search, states);
+    search = cpu_states.at(0) - 1; //% result should be in [0, 1, 2, 3]
+    if(search % BOARD_WIDTH < 4 && BOARD_1[search] >= 0 && BOARD_1[search] != CASE_WATER_DET) {
+        chkComputerStates(search);
         return search;
     }
 }

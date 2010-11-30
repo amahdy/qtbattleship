@@ -48,6 +48,11 @@ class MainWindow : public QMainWindow
     int game_mode; //MODE_PLAY_VS_PLAY || MODE_PLAY_VS_COMP
     int game_turn; //1 -> player_1 || 2-> player_2
 
+    QList<int> cpu_states; //The previous states -if any-
+    QList<int> cpu_waitStates; //If detected more than one 'states'
+
+    //test:
+    int played;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -63,8 +68,7 @@ private:
     int computerClick();
 
     //@arg1 the location
-    //@arg2 current states
-    void chkComputerStates(int, QList<int>);
+    void chkComputerStates(int);
 
     //@arg1 the player that have its turn (1 or 2)
     //@arg2 the location as specified by player (-1 if not specified => computer)

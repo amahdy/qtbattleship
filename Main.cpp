@@ -7,8 +7,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    MainWindow w;
     //for testing
-    GameForm w;
+    //GameForm w;
 #if defined(Q_WS_S60)
     w.showMaximized();
 #else
