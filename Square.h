@@ -22,10 +22,7 @@ private :
 
         QImage image;
 
-        /**
-          * this label  will contain the image that displayed for this square
-          **/
-        QLabel displayedImageLabel;
+
 
 
         int x;
@@ -64,6 +61,11 @@ public :
 
         int getHeight();
         void setWidth(int);
+
+        /**
+          * this label  will contain the image that displayed for this square
+          **/
+        QLabel displayedImageLabel;
 };
 
 #endif // SQUARE_H

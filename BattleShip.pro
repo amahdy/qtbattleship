@@ -13,7 +13,6 @@ TEMPLATE = app
 SOURCES += Main.cpp \
     MainWindow.cpp \
     Square.cpp \
-    Game.cpp \
     GameForm.cpp
 
 

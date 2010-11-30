@@ -9,8 +9,8 @@
 
 
 #define DEFAULT_HEIGHT  10
-
 #define DEFAULT_WIDTH  10
+
 const int height =10;
 const int width = 10;
 

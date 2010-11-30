@@ -7,14 +7,14 @@ GameForm::GameForm(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    *vlay = new QVBoxLayout(this);
+    vlay = new QVBoxLayout(this);
     for(int i =0 ; i < DEFAULT_HEIGHT ; i++)
     {
         hlay[i] = new QHBoxLayout;
         vlay->addLayout(hlay[i]);
         for( int j =0 ; j < DEFAULT_WIDTH ; j ++)
         {
-            hlay[i]->addWidget(gameSide1[i][j]);
+            hlay[i]->addWidget(&gameSide1[i][j].displayedImageLabel);
         }
     }
 
