@@ -10,17 +10,17 @@ TARGET = BattleShip
 TEMPLATE = app
 
 
-SOURCES += main.cpp \
-    mainwindow.cpp \
+SOURCES += Main.cpp \
+    MainWindow.cpp \
     Square.cpp
 
 HEADERS  += \
-    mainwindow.h \
+    MainWindow.h \
     Square.h \
     Constants.h
 
 FORMS    += \
-    mainwindow.ui
+    MainWindow.ui
 
 CONFIG += mobility
 MOBILITY = 
