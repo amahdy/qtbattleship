@@ -17,7 +17,8 @@ SOURCES += main.cpp \
 HEADERS  += \
     mainwindow.h \
     Square.h \
-    Contestants.h
+    Contestants.h \
+    Constants.h
 
 FORMS    += \
     mainwindow.ui
