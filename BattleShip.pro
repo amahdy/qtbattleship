@@ -17,7 +17,6 @@ SOURCES += main.cpp \
 HEADERS  += \
     mainwindow.h \
     Square.h \
-    Contestants.h \
     Constants.h
 
 FORMS    += \
