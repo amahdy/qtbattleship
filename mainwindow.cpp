@@ -13,12 +13,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-int MainWindow::computerClick(QList state) {
+int MainWindow::computerClick(QList<int> state) {
 
     //Will check in BOARD_1 because computer's board is alwas BOARD_2
 
-    static QList states; //The previous states -if any-
-    static QList waitStates; //If detected more than one 'states'
+    static QList<int> states; //The previous states -if any-
+    static QList<int> waitStates; //If detected more than one 'states'
 
     //No old states,
     if(states.count() == 0) {
