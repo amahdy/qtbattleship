@@ -22,9 +22,6 @@ private :
 
         QImage image;
 
-
-
-
         int x;
         int y;
 
@@ -37,11 +34,11 @@ private :
 
         //imageLabel->setPixmap(QPixmap::fromImage(image));
 public :
-        explicit Square();
-        explicit Square(int);
-        explicit Square(bool);
-        explicit Square(int, bool);
-
+        Square();
+       /* Square(int);
+        Square(bool);
+        Square(int, bool);
+*/
         void setImage(QImage);
         void setImage(QString);
         QImage getImage();
@@ -65,7 +62,9 @@ public :
         /**
           * this label  will contain the image that displayed for this square
           **/
-        QLabel displayedImageLabel;
+        QLabel* displayedImageLabel;
+
+        QPushButton displayedImageBotton;
 };
 
 #endif // SQUARE_H

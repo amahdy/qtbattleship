@@ -4,11 +4,11 @@ Square::Square()
 {
     this->state = 0;
     this->hit = 0;
-
+    //displayedImageBotton.setText("sdf");
     this->reloadImage();
 }
 
-Square::Square(int state)
+/*Square::Square(int state)
 {
     this->state = 0;
 
@@ -28,7 +28,7 @@ Square::Square(int state, bool hit)
 
     this->reloadImage();
 }
-
+*/
 void Square::setImage(QImage image)
 {
    this->image =  image;
@@ -46,13 +46,17 @@ QImage Square::getImage()
 
 void Square::reloadImage()
 {
-    this->setImage(this->getFileName());
-    this->changeDisplayedImage(this->getImage());
+    //this->setImage(this->getFileName());
+    //this->getFileName()
+    displayedImageBotton.setText(this->getFileName());
+    //this->changeDisplayedImage(this->getImage());
 }
 
 void Square::changeDisplayedImage(QImage image)
 {
-    this->displayedImageLabel.setPixmap(QPixmap::fromImage(image));
+    this->displayedImageLabel = new QLabel();
+    //this->displayedImageLabel->resize(20, 20);
+    this->displayedImageLabel->setPixmap(QPixmap::fromImage(image));
 }
 
 bool Square::getHit()
@@ -117,4 +121,3 @@ void Square::setWidth(int width)
 {
     this->width = width;
 }
-
