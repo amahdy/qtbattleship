@@ -1,5 +1,8 @@
 #include "MainWindow.h"
-#include "ui_mainwindow.h"
+#include "ui_MainWindow.h"
+
+#include <iostream>
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,10 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //init state_1 & state_2:
     for(int i=0; i<BOARD_WEIGHT; i++) {
-        state_1.at(i);
+        state_1.append(i);
     }
     for(int i=0; i<BOARD_WEIGHT; i++) {
-        state_2.at(i);
+        state_2.append(i);
     }
 
     //Assume PLAYER vs COMPUTER:
@@ -34,7 +37,30 @@ MainWindow::MainWindow(QWidget *parent) :
     //Assume PLAYER_1 turn:
     game_turn = 1;
 
-    play(game_turn);
+    //play(game_turn);
+
+    cli_disp();
+
+    play(2, -1);
+}
+
+void MainWindow::cli_disp() {
+
+    for (int i=0; i<BOARD_WIDTH; i++) {
+        for(int j=0; j<BOARD_HEIGHT; j++) {
+            cout << BOARD_1[i*BOARD_WIDTH + j];
+        }
+        cout<<endl;
+    }
+
+    cout<<endl<<endl;
+
+    for (int i=0; i<BOARD_WIDTH; i++) {
+        for(int j=0; j<BOARD_HEIGHT; j++) {
+            cout << BOARD_2[i*BOARD_WIDTH + j];
+        }
+        cout<<endl;
+    }
 }
 
 MainWindow::~MainWindow()
@@ -42,40 +68,85 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::play(int player) {
+void MainWindow::play(int player, int location) {
+
+    bool playAgain = true;
+    int value = 999;
     switch(player) {
     case 1: //player_1
         //Must be a human (not computer)
-        //call update_state()
-        //call update_ui()
+
+        value = BOARD_2[location];
+
+        switch(value) {
+        case CASE_WATER:
+            BOARD_2[location] = CASE_WATER_DET;
+            playAgain = false;
+            break;
+        case CASE_SHIP_1:
+            BOARD_2[location] = CASE_SHIP_1_DET;
+            break;
+        case CASE_SHIP_2:
+            BOARD_2[location] = CASE_SHIP_2_DET;
+            break;
+        case CASE_SHIP_3:
+            BOARD_2[location] = CASE_SHIP_3_DET;
+            break;
+        }
+        state_2.removeAt(location);
         break;
 
     case 2: //player_2
-        //If it's a human:
-        if(game_mode=MODE_PLAY_VS_PLAY) {
-            //call update_state()
-            //call update_ui()
-        }
+        //Maybe human or maybe computer
 
-        //If it's computer: //game_mode = MODE_PLAY_VS_COMP
-        int location = computerClick();
-        int value = BOARD_1[location];
+        //If computer take the location from the computerClick()
+        if(game_mode==MODE_PLAY_VS_COMP) {
+            location = computerClick();
+            cout << "location by computer: " << location << endl;
+        }
+        value = BOARD_1[location];
+
         switch(value) {
         case CASE_WATER:
+            BOARD_1[location] = CASE_WATER_DET;
+            playAgain = false;
             break;
         case CASE_SHIP_1:
+            BOARD_1[location] = CASE_SHIP_1_DET;
             break;
         case CASE_SHIP_2:
+            BOARD_1[location] = CASE_SHIP_2_DET;
             break;
         case CASE_SHIP_3:
+            BOARD_1[location] = CASE_SHIP_3_DET;
             break;
         }
-
+        state_1.removeAt(location);
+        //TODO: need to handle removing states from the computerClick() if it's a ship sinks
         break;
+    }
+
+//call update_ui()
+
+    if(playAgain && game_mode==MODE_PLAY_VS_COMP) {
+        play(2, -1);
+    }
+}
+
+void MainWindow::chkComputerStates(int loc, QList<int> current) {
+    //If not water then add to my states:
+    if(BOARD_1[loc] > 0) {
+        current.append(loc);
     }
 }
 
 int MainWindow::computerClick() {
+
+    /*
+     * VERY IMPORTANT
+     * MUST call chkComputerStates(val, states) BEFORE return
+     * WHERE 'val' is the designed value to be returned
+     */
 
     //Will check in BOARD_1 because computer's board is always BOARD_2
     //Will deal with state_1 because it's always the non-computer state
@@ -91,6 +162,7 @@ int MainWindow::computerClick() {
             qsrand(midnight.secsTo(QTime::currentTime()));
             int selection = qrand() % state_1.count();
 
+            chkComputerStates(state_1.at(selection), states);
             return state_1.at(selection);
         }
 
@@ -112,6 +184,8 @@ int MainWindow::computerClick() {
                 //If BOARD_1[elem] is positive then never detected:
                 if(BOARD_1[elem] >= 0) {
                     //Take decision to hit it:
+
+                    chkComputerStates(elem, states);
                     return elem;
                 }
                 elem -= BOARD_WIDTH;
@@ -123,6 +197,8 @@ int MainWindow::computerClick() {
                 //If BOARD_1[elem] is positive then never detected:
                 if(BOARD_1[elem] >= 0) {
                     //Take decision to hit it:
+
+                    chkComputerStates(elem, states);
                     return elem;
                 }
                 elem += BOARD_WIDTH;
@@ -138,6 +214,8 @@ int MainWindow::computerClick() {
                 //If BOARD_1[elem] is positive then never detected:
                 if(BOARD_1[elem] >= 0) {
                     //Take decision to hit it:
+
+                    chkComputerStates(elem, states);
                     return elem;
                 }
                 elem -= 1;
@@ -149,6 +227,8 @@ int MainWindow::computerClick() {
                 //If BOARD_1[elem] is positive then never detected:
                 if(BOARD_1[elem] >= 0) {
                     //Take decision to hit it:
+
+                    chkComputerStates(elem, states);
                     return elem;
                 }
                 elem += 1;
@@ -158,7 +238,10 @@ int MainWindow::computerClick() {
         //Being here means that all directions are already revailed, then it's more than one state:
         waitStates.append(states.at(0));
         states.removeAt(0);
-        return computerClick(state_1);
+
+        int ret = computerClick();
+        chkComputerStates(ret, states);
+        return ret;
     }
 
     //One only item in states, try to hit any of its neighbours:
@@ -168,21 +251,25 @@ int MainWindow::computerClick() {
     //Search in it's right-side:
     search = states.at(0) + 1;
     if(search < BOARD_WEIGHT && BOARD_1[search] >= 0) {
+        chkComputerStates(search, states);
         return search;
     }
     //Search in it's top-side:
     search = states.at(0) - BOARD_WIDTH;
     if(search > 0 && BOARD_1[search] >= 0) {
+        chkComputerStates(search, states);
         return search;
     }
     //Search in it's bottom-side:
     search = states.at(0) + BOARD_WIDTH;
     if(search < BOARD_WEIGHT && BOARD_1[search] >= 0) {
+        chkComputerStates(search, states);
         return search;
     }
     //Search in it's left-side:
     search = states.at(0) - 1;
     if(search > 0 && BOARD_1[search] >= 0) {
+        chkComputerStates(search, states);
         return search;
     }
 }

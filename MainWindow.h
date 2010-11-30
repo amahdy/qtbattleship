@@ -56,12 +56,20 @@ public:
 private:
     Ui::MainWindow *ui;
 
+    //just for debug, display the two boards in CLI
+    void cli_disp(void);
+
     //@return the decided action location
     int computerClick();
 
+    //@arg1 the location
+    //@arg2 current states
+    void chkComputerStates(int, QList<int>);
+
     //@arg1 the player that have its turn (1 or 2)
+    //@arg2 the location as specified by player (-1 if not specified => computer)
     //@return void
-    void play(int);
+    void play(int, int);
 
 
 };
