@@ -64,6 +64,6 @@ public :
 
         int getHeight();
         void setWidth(int);
-}
+};
 
 #endif // SQUARE_H
