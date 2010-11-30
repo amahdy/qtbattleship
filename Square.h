@@ -2,7 +2,7 @@
 #define SQUARE_H
 
 #include <QtGui>
-#include "Contestants.h"
+#include "Constants.h"
 
 class Square{
 private :
