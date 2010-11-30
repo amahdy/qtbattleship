@@ -2,6 +2,10 @@
 #define SQUARE_H
 
 #include <QtGui>
+#include <QImage>
+#include <QString>
+#include <QLabel>
+
 #include "Constants.h"
 
 class Square{
@@ -10,11 +14,11 @@ private :
           * 0 water, 1 ship
           * and i meant to made it int not a bool because it might be changed later
           **/
-        int state = 0;
+        int state;
         /**
           * 0 didn't hit yet, 1 is already hit
           **/
-        bool hit = 0;
+        bool hit;
 
         QImage image;
 
@@ -30,22 +34,21 @@ private :
         int height;
         int width;
 
-        void changeDisplayedImage();
+        void reloadImage();
+        void changeDisplayedImage(QImage);
         QString getFileName();
 
         //imageLabel->setPixmap(QPixmap::fromImage(image));
 public :
-        Square();
-        Square(int);
-        Square(bool);
-        Square(int, bool);
-
-        Square(int, bool, int, int);
-        Square(int, bool, int, int, int, int);
+        explicit Square();
+        explicit Square(int);
+        explicit Square(bool);
+        explicit Square(int, bool);
 
         void setImage(QImage);
         void setImage(QString);
         QImage getImage();
+
 
         bool getHit();
         void setHit(bool);

@@ -2,16 +2,23 @@
 
 Square::Square()
 {
+    this->state = 0;
+    this->hit = 0;
+
     this->reloadImage();
 }
 
 Square::Square(int state)
 {
+    this->state = 0;
+
     this->setState(state);
 
 }
 Square::Square(bool hit)
 {
+    this->hit = 0;
+
     this->setHit(hit);
 }
 Square::Square(int state, bool hit)
@@ -20,14 +27,6 @@ Square::Square(int state, bool hit)
     this->hit = hit;
 
     this->reloadImage();
-}
-Square::Square(int state, bool hit, int height, int width)
-{
-
-}
-Square::Square(int state, bool hit, int height, int width, int x, int y)
-{
-    this->Square();
 }
 
 void Square::setImage(QImage image)
@@ -53,7 +52,7 @@ void Square::reloadImage()
 
 void Square::changeDisplayedImage(QImage image)
 {
-    this->displayedImageLabel->setPixmap(QPixmap::fromImage(image));
+    this->displayedImageLabel.setPixmap(QPixmap::fromImage(image));
 }
 
 bool Square::getHit()
@@ -117,9 +116,5 @@ int Square::getHeight()
 void Square::setWidth(int width)
 {
     this->width = width;
-}
-Square::~Square()
-{
-
 }
 
