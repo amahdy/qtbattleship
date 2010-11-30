@@ -12,16 +12,20 @@ TEMPLATE = app
 
 SOURCES += Main.cpp \
     MainWindow.cpp \
-    Square.cpp
+    Square.cpp \
+    Game.cpp \
+    GameForm.cpp
 
 
 HEADERS  += \
     MainWindow.h \
     Square.h \
-    Constants.h
+    Constants.h \
+    GameForm.h
 
 FORMS    += \
-    MainWindow.ui
+    MainWindow.ui \
+    GameForm.ui
 
 CONFIG += mobility
 MOBILITY = 
