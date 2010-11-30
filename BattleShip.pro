@@ -14,6 +14,7 @@ SOURCES += Main.cpp \
     MainWindow.cpp \
     Square.cpp
 
+
 HEADERS  += \
     MainWindow.h \
     Square.h \
